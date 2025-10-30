@@ -60,8 +60,9 @@ This project investigates mental health discussions on TikTok by applying natura
 ---
 
 ## 📄 Reports
-- [📊 Project Report](Independent%20study.pdf)
-- [📑 Project Presentation](Independent%20study.pptx)
+(temporarily removed while we update the results/paper) check this again in a few weeks.
+- 📊 Project Report
+- 📑 Project Presentation 
 
 ---
 
