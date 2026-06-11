@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Local environments and secrets
+.env
+.venv/
+venv/
+env/
+*.local
+
+# Locally retained legacy/auxiliary files not used by the paper pipeline
+old/
+
+# TikTok Research API data and generated outputs
+Data/
+Figures/
+PaperExtracted/
+logs/
+methodology_audit.md
+
+# Variant generated outputs are not part of the paper pipeline.
+Variants/
+
+# Large model/cache artifacts
+*.feather
+*.parquet
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.safetensors
+*.npy
+*.npz
+*.sqlite
+*.sqlite3
+
+# Generated tabular/plot artifacts outside the standard output dirs
+*.log
+*.html
+*.pdf
+*.png
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/

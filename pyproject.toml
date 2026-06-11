@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tiktok-mental-health-analysis"
+version = "0.1.0"
+description = "TikTok Mental Health Awareness Month collection and analysis pipeline."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  {name = "Henrique Ferraz de Arruda"},
+  {name = "Andreia Sofia Teixeira"},
+  {name = "Pranay Gundala Reddy"},
+  {name = "Anindya Mondal"},
+  {name = "Kleber Andrade Oliveira"},
+  {name = "Filipi Nascimento Silva"},
+]
+dependencies = [
+  "pandas",
+  "pyarrow",
+  "numpy",
+  "scipy",
+  "matplotlib",
+  "seaborn",
+  "tqdm",
+  "requests",
+  "scikit-learn",
+  "nltk",
+  "torch",
+  "transformers",
+  "sentence-transformers",
+  "bertopic",
+  "hdbscan",
+  "umap-learn",
+  "detoxify",
+  "langdetect",
+  "lingua-language-detector",
+]
+
+[project.urls]
+Repository = "https://github.com/PranayReddy22/tiktok-mental-health-analysis"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tiktokresearch*"]

@@ -1,70 +1,178 @@
-# 📱 Analyzing Mental Health Trends on TikTok Using Topic Modeling and Sentiment Analysis
+# TikTok Mental Health Analysis
 
-This project investigates mental health discussions on TikTok by applying natural language processing techniques to video descriptions, hashtags, audio transcripts, and user comments. Leveraging topic modeling and sentiment analysis, including toxicity evaluation, the study identifies prevalent mental health themes, gauges emotional tone, and provides insights into user interactions around mental health topics.
+Code for the data collection and analysis pipeline for:
 
----
+**The Tone of Awareness: Topic, Sentiment, and Toxicity Maps During Mental Health Month on TikTok**
 
-## 🎯 Objectives
+Authors:
+Henrique Ferraz de Arruda, Andreia Sofia Teixeira, Pranay Gundala Reddy, Anindya Mondal, Kleber Andrade Oliveira, and Filipi Nascimento Silva.
 
-- Identify and analyze major themes related to mental health on TikTok.
-- Perform in-depth sentiment and toxicity analysis on user comments and video content.
-- Provide quantitative and qualitative insights into mental health discourse on social media.
+Affiliations:
 
----
+- Institute for Biocomputation and Physics of Complex Systems (BIFI), University of Zaragoza, Zaragoza, Spain
+- ARAID Foundation, Zaragoza, Spain
+- BRAN Lab, Network Science Institute, Northeastern University London, London, UK
+- Kent Medway Medical School, Canterbury, United Kingdom
+- LASIGE, Faculdade de Ciencias da Universidade de Lisboa, Lisboa, Portugal
+- Observatory on Social Media, Indiana University, Bloomington, IN, USA
+- Social Dynamics Research Lab, Department of Psychology, University of Limerick, Limerick, Ireland
+- CSSI - Kellogg School of Management, Northwestern University, IL, USA
 
-## 🔍 Methodology
+## Scope
 
-### Data Collection & Preparation
-- Collected data via TikTok API, focusing on mental health-related content.
-- Converted raw JSON data into structured DataFrames, merging video descriptions, hashtags, and audio transcriptions for comprehensive analysis.
+This repository contains scripts and metadata only. It intentionally excludes raw TikTok data, intermediate data, model artifacts, generated figures, logs, and paper-rendered assets. TikTok data are governed by the TikTok Research API terms and cannot be redistributed here.
 
-### Topic Modeling Techniques
-- Used CountVectorizer + Latent Dirichlet Allocation (LDA) for initial topic extraction.
-- Enhanced topic clarity by integrating domain-specific and social media-specific stop words.
-- Experimented with TF-IDF vectorization + Non-negative Matrix Factorization (NMF).
-- Explored transformer-based embeddings using BERTopic for deeper semantic extraction.
-- Improved keyword distinctiveness with log odds method.
+The pipeline covers:
 
-### Sentiment & Toxicity Analysis
-- Conducted sentiment analysis using VADER Sentiment Analyzer.
-- Evaluated toxicity using Detoxify, examining severe toxicity, insults, identity attacks, and threats.
-- Visualized distributions and averages of sentiment and toxicity scores across topics using violin plots, histograms, and descriptive metrics.
+- TikTok Research API video collection
+- video-ID preparation for comment collection
+- restartable comment collection
+- preprocessing
+- XLM-T sentiment, VADER sentiment, and Detoxify toxicity scoring
+- sentence-transformer embeddings and BERTopic topic modeling
+- log-odds topic keywords
+- paper figures, tables, tests, and methodology audit
 
-### Validation & Qualitative Analysis
-- Manually reviewed videos for topical relevance and contextual accuracy of automated analyses.
+## TikTok API Access
 
----
+You need TikTok Research API access to collect new data. Set these environment variables before running collection scripts:
 
-## 📈 Key Insights
-- Distinctive topics emerged clearly after applying advanced NLP techniques.
-- Toxicity levels and sentiment trends varied significantly across topics, providing critical insights for mental health professionals and content moderators.
-- Interactive visualizations facilitated deeper understanding of user sentiments and discourse dynamics.
+```bash
+export TIKTOK_CLIENT_KEY="..."
+export TIKTOK_CLIENT_SECRET="..."
+```
 
----
+Without these credentials, API collection stages cannot run. You can still run downstream stages only if you already have local data files in `Data/`.
 
-## 🛠️ Technologies Used
-- Python (Pandas, NumPy, Matplotlib, Seaborn, scikit-learn)
-- NLP: CountVectorizer, TF-IDF, LDA, NMF, BERTopic
-- Sentiment Analysis: VADER
-- Toxicity Analysis: Detoxify
-- Visualization: Matplotlib, Seaborn, Plotly
-- API & Data Extraction: TikTok API, Git repositories for comment extraction
+## Repository Layout
 
----
+```text
+Scripts/          Pipeline entry points and analysis scripts
+tiktokresearch/   Local package with the TikTokAPI wrapper and shared pipeline utilities
+Data/             Generated/local data, ignored by Git
+Figures/          Generated plots, ignored by Git
+```
 
-## 🚀 Future Work
-- Conduct longitudinal analysis to detect evolving mental health trends.
-- Explore network analysis to understand user interactions and influence dynamics.
-- Analyze the impact of significant external events (e.g., elections, pandemics) on mental health sentiment.
+The local package exposes the API wrapper as:
 
----
+```python
+import tiktokresearch as tiktok
 
-## 📄 Reports
-(temporarily removed while we update the results/paper) check this again in a few weeks.
-- 📊 Project Report
-- 📑 Project Presentation 
+api = tiktok.TikTokAPI(client_key, client_secret)
+```
 
----
+## Installation
 
-## 📃 License
-This project is intended for research and educational purposes only. Data used is publicly available or obtained via official APIs.
+Use a GPU-enabled Python environment for the scoring and embedding stages when possible.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install -e .
+```
+
+If you use Conda, create an environment with Python 3.10+ and install from `requirements.txt` or `pip install -e .`.
+
+Some optional paper-rendering steps use command-line PDF tools:
+
+- `pdftotext`
+- `pdfimages`
+- `pdftoppm`
+
+On Debian/Ubuntu these are provided by `poppler-utils`.
+
+## Pipeline
+
+Run from the repository root.
+
+Dry-run video collection:
+
+```bash
+python Scripts/01_collect_videos.py --dataset mentalhealth2024 --dry-run
+```
+
+Collect videos using the paper keyword window:
+
+```bash
+python Scripts/01_collect_videos.py --dataset mentalhealth2024
+```
+
+Prepare IDs for comment collection:
+
+```bash
+python Scripts/02_prepare_comment_ids.py --dataset mentalhealth2024 --shuffle
+```
+
+Collect comments:
+
+```bash
+python Scripts/03_collect_comments.py --dataset mentalhealth2024
+```
+
+Preprocess:
+
+```bash
+python Scripts/04_preprocess.py --dataset mentalhealth2024
+```
+
+Score sentiment and toxicity:
+
+```bash
+python Scripts/05_score_sentiment_toxicity.py --dataset mentalhealth2024 --reuse
+```
+
+Fit/export embeddings and topics:
+
+```bash
+python Scripts/06_embed_and_topic_model.py --dataset mentalhealth2024 --reuse-embeddings --reuse-model
+```
+
+Generate paper figures, tables, tests, and audit:
+
+```bash
+python Scripts/07_generate_paper_outputs.py --dataset mentalhealth2024 --skip-umap
+```
+
+The full wrapper is:
+
+```bash
+Scripts/run_full_pipeline.sh --dataset mentalhealth2024 --skip-umap
+```
+
+To include collection:
+
+```bash
+Scripts/run_full_pipeline.sh --dataset mentalhealth2024 --collect-videos --collect-comments --skip-umap
+```
+
+## Paper Defaults
+
+The default collection terms are defined in `tiktokresearch.pipeline.MENTAL_HEALTH_TERMS` and cover the Mental Health Awareness Month window from April 15 through June 15 for 2023 and 2024.
+
+The topic modeling defaults follow the manuscript settings:
+
+- embeddings: `sentence-transformers/all-mpnet-base-v2`
+- BERTopic with UMAP and HDBSCAN
+- UMAP neighbors: `20`
+- UMAP components: `10`
+- UMAP min distance: `0.05`
+- HDBSCAN min cluster size: `300`
+- HDBSCAN max cluster size: `5000`
+- HDBSCAN min samples: `15`
+
+## Data Policy
+
+Do not commit TikTok data, model outputs, figures, or logs. The `.gitignore` is configured to keep the repository limited to scripts and metadata.
+
+Generated outputs are expected under `Data/`, `Figures/`, `PaperExtracted/`, and `logs/`.
+
+## Remote
+
+This repository is intended to replace:
+
+```text
+git@github.com:PranayReddy22/tiktok-mental-health-analysis.git
+```
+
+After review, initialize or update the Git repository from this directory and push to that remote.
