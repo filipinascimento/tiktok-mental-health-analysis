@@ -75,13 +75,6 @@ pip install -e .
 
 If you use Conda, create an environment with Python 3.10+ and install from `requirements.txt` or `pip install -e .`.
 
-Some optional paper-rendering steps use command-line PDF tools:
-
-- `pdftotext`
-- `pdfimages`
-- `pdftoppm`
-
-On Debian/Ubuntu these are provided by `poppler-utils`.
 
 ## Pipeline
 
@@ -172,9 +165,3 @@ The topic modeling defaults follow the manuscript settings:
 - HDBSCAN min cluster size: `300`
 - HDBSCAN max cluster size: `5000`
 - HDBSCAN min samples: `15`
-
-## Data Policy
-
-Do not commit TikTok data, model outputs, figures, or logs. The `.gitignore` is configured to keep the repository limited to scripts and metadata.
-
-Generated outputs are expected under `Data/`, `Figures/`, `logs/`, and `zenodo/`. The `zenodo/` folder is an ignored local staging area for external deposits, including the indexed metrics dataset README and CSV files.
