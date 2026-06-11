@@ -23,6 +23,7 @@ Figures/
 PaperExtracted/
 logs/
 methodology_audit.md
+zenodo/
 
 # Variant generated outputs are not part of the paper pipeline.
 Variants/

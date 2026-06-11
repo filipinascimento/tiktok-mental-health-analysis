@@ -32,6 +32,7 @@ The pipeline covers:
 - sentence-transformer embeddings and BERTopic topic modeling
 - log-odds topic keywords
 - paper figures, tables, tests, and methodology audit
+- Zenodo-shareable indexed metrics CSV export
 
 ## TikTok API Access
 
@@ -134,6 +135,17 @@ Generate paper figures, tables, tests, and audit:
 python Scripts/07_generate_paper_outputs.py --dataset mentalhealth2024 --skip-umap
 ```
 
+Export the shareable indexed metrics dataset for Zenodo:
+
+```bash
+python Scripts/08_export_zenodo_indexed_metrics_dataset.py \
+  --variant-dir old/Variants/paper_locked_multilingual_detoxify_mpnet \
+  --output-dir zenodo/indexed_metrics_dataset \
+  --min-entries-per-date 10
+```
+
+This export writes only `videos.csv` and `comments.csv`: release-local video/comment indices, video topic labels, UTC dates, Detoxify multilingual toxicity scores, and XLM-T sentiment scores. It excludes TikTok IDs, usernames, raw text, processed text, captions, hashtags, URLs, and audio transcripts. Dates with fewer than 10 combined video/comment rows are excluded iteratively, and comments are retained only when their parent `video_index` remains in `videos.csv`.
+
 The full wrapper is:
 
 ```bash
@@ -165,14 +177,4 @@ The topic modeling defaults follow the manuscript settings:
 
 Do not commit TikTok data, model outputs, figures, or logs. The `.gitignore` is configured to keep the repository limited to scripts and metadata.
 
-Generated outputs are expected under `Data/`, `Figures/`, `PaperExtracted/`, and `logs/`.
-
-## Remote
-
-This repository is intended to replace:
-
-```text
-git@github.com:PranayReddy22/tiktok-mental-health-analysis.git
-```
-
-After review, initialize or update the Git repository from this directory and push to that remote.
+Generated outputs are expected under `Data/`, `Figures/`, `logs/`, and `zenodo/`. The `zenodo/` folder is an ignored local staging area for external deposits, including the indexed metrics dataset README and CSV files.
